@@ -6,7 +6,7 @@ A modern web application for generating patient care PDFs with notification and 
 
 - **Frontend**: Next.js 15, React 19, TypeScript
 - **Backend**: Next.js API Routes
-- **Database**: Supabase (PostgreSQL)
+- **Database**: Supabase
 - **Storage**: Supabase Storage
 - **PDF Processing**: pdf-lib
 
@@ -22,7 +22,7 @@ A modern web application for generating patient care PDFs with notification and 
 
 1. Clone and install dependencies:
 ```bash
-git clone <repository-url>
+git clone https://github.com/zikrullahMd/vocare
 cd vocare-backend
 npm install
 ```
@@ -101,6 +101,10 @@ FOR INSERT WITH CHECK (bucket_id = 'document');
 2. Copy your Project URL and Service Role Key
 3. Add them to your `.env.local` file
 
+## Testing with Postman
+
+Import the provided Postman collection [Vocare.postman_collection.json](https://github.com/zikrullahMd/vocare/blob/main/Vocare.postman_collection.json) into Postman to test all endpoints with pre-configured requests and example data.
+
 ## API Endpoints
 
 ### POST /api/generate-pdf
@@ -113,16 +117,104 @@ Generate a PDF document from form data.
   "form": "a",
   "notify": true,
   "form_payload": {
-    "patient_insurer_name": "AOK Pflegekasse",
+    "patient_id": "PAT-001",
+    "patient_insurer_name": "AOK Bayern",
     "patient_insured_fullname": "Max Mustermann",
-    "patient_birth_date": "1990-01-01",
-    "patient_payer_id": "12345",
-    "patient_insured_id": "67890",
+    "patient_insured_vorname": "Max",
+    "patient_insured_nachname": "Mustermann",
+    "patient_birth_date": "1985-07-21",
+    "patient_payer_id": "PAYER-123",
+    "patient_insured_id": "INS-987654",
     "patient_status": "active",
-    "patient_facility_id": "facility123",
-    "patient_doctor_id": "doctor456",
-    "patient_date": "2024-01-15",
-    "order_first": true
+    "patient_facility_id": "FAC-55",
+    "patient_doctor_id": "DOC-22",
+    "patient_date": "2025-09-25",
+
+    "order_first": true,
+    "order_followup": true,
+    "order_accident": true,
+    "order_ser": true,
+
+    "diagnosis_icd10": "E11.9",
+    "diagnosis_restrictions": "Limited mobility and diabetes management required",
+    "restrictions_text": "Patient requires home care due to mobility limitations and diabetes management needs",
+
+    "period_from": "2025-10-01",
+    "period_to": "2025-12-31",
+    "care_meds_text": "Metformin 500mg twice daily, Insulin as needed",
+    "panel_freq_daily": 2,
+    "panel_freq_weekly": 3,
+    "panel_freq_monthly": 1,
+    "panel_dur_from": "2025-10",
+    "panel_dur_to": "2025-12",
+
+    "care_prepare_med_box": true,
+    "care_administer_meds": true,
+    "care_injection": true,
+    "care_injection_prepare": true,
+    "care_injection_im": true,
+    "care_injection_sc": true,
+
+    "glucose_first_or_new": true,
+    "glucose_intensified_insulin": true,
+
+    "comp_stockings_on": true,
+    "comp_bandages_apply": true,
+    "comp_side_right": true,
+    "comp_side_left": true,
+    "comp_side_both": true,
+    "comp_bandages_remove": true,
+    "comp_support_bandage_type": "Class II Compression Stockings",
+    "supportive_and_stabilizing": true,
+
+    "wound_acute": true,
+    "wound_chronic": true,
+    "wound_type": "Diabetic ulcer",
+    "wound_materials": "Hydrocolloid dressing, saline solution",
+    "wound_location": "Left foot, plantar surface",
+    "wound_size_lwd": "2.5cm x 1.8cm x 0.3cm",
+    "wound_grade": "Grade 2",
+
+    "s37_support_care_37a": true,
+    "s37_hospital_avoid_37_1": true,
+    "s37_base_care": true,
+    "s37_household_care": true,
+    "s37_freq_daily": 2,
+    "s37_freq_weekly": 4,
+    "s37_freq_monthly": 1,
+    "s37_from": "2025-10-01",
+    "s37_to": "2025-12-31",
+
+    "other_measures": "Physiotherapy referral, dietary consultation, podiatry care",
+    "instruction_text": "Comprehensive caregiver instruction including medication administration, wound care, and glucose monitoring",
+    "instruction_count": 5,
+    "doctor_signature": "Dr. Johannes Arzt",
+    "notes_text": "Patient requires comprehensive care plan. Family caregiver training completed. Regular follow-up appointments scheduled.",
+
+    "doctor": {
+      "name": "Dr. Johannes Arzt",
+      "dr_nr": "DR-7788",
+      "establishment_nr": "EST-4455",
+      "street": "Hauptstr. 10",
+      "city": "München",
+      "postal_code": "80331"
+    },
+
+    "medi_multi": {
+      "injection": true,
+      "herrichten": true,
+      "intra_muscular": true,
+      "subkutan": true
+    },
+
+    "p37_1": {
+      "base_care": {
+        "active": true,
+        "daily": 2,
+        "weekly": 4,
+        "monthly": 1
+      }
+    }
   }
 }
 ```
@@ -135,6 +227,41 @@ Generate a PDF document from form data.
   "success": true,
   "message": "PDF generated successfully",
   "file_size": 12345
+}
+```
+
+### POST /api/log
+Create a new activity log entry.
+
+**Request Body:**
+```json
+{
+  "event_type": "user_action",
+  "details": {
+    "action": "form_submitted",
+    "user_id": "user123"
+  }
+}
+```
+
+### POST /api/notify
+Send notifications (email, SMS, push).
+
+**Request Body:**
+```json
+{
+  "type": "pdf_ready",
+  "recipient": {
+    "email": "patient@example.com",
+    "phone": "+1234567890"
+  },
+  "message": "Your care document is ready",
+  "document": {
+    "id": "doc123",
+    "name": "Care Document",
+    "download_url": "https://..."
+  },
+  "notification_types": ["email", "sms"]
 }
 ```
 
@@ -176,80 +303,3 @@ Retrieve all activity logs.
   ]
 }
 ```
-
-### POST /api/log
-Create a new activity log entry.
-
-**Request Body:**
-```json
-{
-  "event_type": "user_action",
-  "details": {
-    "action": "form_submitted",
-    "user_id": "user123"
-  }
-}
-```
-
-### POST /api/notify
-Send notifications (email, SMS, push).
-
-**Request Body:**
-```json
-{
-  "type": "pdf_ready",
-  "recipient": {
-    "email": "patient@example.com",
-    "phone": "+1234567890"
-  },
-  "message": "Your care document is ready",
-  "document": {
-    "id": "doc123",
-    "name": "Care Document",
-    "download_url": "https://..."
-  },
-  "notification_types": ["email", "sms"]
-}
-```
-
-## Testing with Postman
-
-Import the provided `Care-Platform-API.postman_collection.json` file into Postman to test all endpoints with pre-configured requests and example data.
-
-## Development
-
-### Project Structure
-
-```
-src/
-├── app/
-│   ├── api/               # API routes
-│   ├── logs/              # Logs page
-│   ├── notifications/     # Notifications page
-│   ├── pdfs/              # PDFs page
-│   └── page.tsx           # Home page
-├── components/            # React components
-├── hooks/                 # Custom hooks
-├── lib/                   # Utilities
-├── styles/                # CSS files
-├── types/                 # TypeScript types
-└── utils/                 # Helper functions
-```
-
-### Code Style
-
-- Use TypeScript for all code
-- Follow Next.js 15 conventions
-- Use Tailwind CSS for styling
-- Write modular, reusable components
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push to GitHub
-2. Connect repository to Vercel
-3. Set environment variables in Vercel dashboard
-4. Deploy
-
-The app can also be deployed to Netlify, Railway, or any platform supporting Next.js.
