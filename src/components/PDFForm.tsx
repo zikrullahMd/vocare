@@ -49,6 +49,15 @@ export default function PDFForm({ onGenerate, loading, lastDoc }: PDFFormProps) 
     if (!formState.patient_date?.trim()) newErrors.patient_date = 'Date is required';
     if (!formState.diagnosis_icd10?.trim()) newErrors.diagnosis_icd10 = 'ICD-10 Diagnosis Code is required';
     
+    // Require at least one order type
+    const hasOrder = !!(
+      (formState as any).order_first ||
+      (formState as any).order_followup ||
+      (formState as any).order_accident ||
+      (formState as any).order_ser
+    );
+    if (!hasOrder) newErrors.order_type = 'Select at least one order type';
+    
     // Check doctor fields
     if (!doctor.name?.trim()) newErrors.doctor_name = 'Doctor Name is required';
     if (!doctor.dr_nr?.trim()) newErrors.doctor_dr_nr = 'Doctor Nr is required';
@@ -161,11 +170,7 @@ export default function PDFForm({ onGenerate, loading, lastDoc }: PDFFormProps) 
               />
               {errors.patient_insurer_name && <p className="text-red-500 text-xs mt-1">{errors.patient_insurer_name}</p>}
             </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">Insured Fullname</label>
-              <input className="w-full border border-gray-300 rounded px-3 py-2 text-sm" value={formState.patient_insured_fullname}
-                onChange={(e)=>setFormState((s:any)=>({...s, patient_insured_fullname:e.target.value}))} />
-            </div>
+            
             <div>
               <label className="block text-sm text-gray-700 mb-1">
                 Insured Vorname <span className="text-red-500">*</span>
@@ -272,7 +277,8 @@ export default function PDFForm({ onGenerate, loading, lastDoc }: PDFFormProps) 
 
         {/* Order Type */}
         <div>
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Order Type</h2>
+          <h2 className="text-lg font-medium text-gray-900 mb-1">Order Type <span className="text-red-500">*</span></h2>
+          {errors.order_type && (<p className="text-red-500 text-xs mb-3">{errors.order_type}</p>)}
           <div className="grid sm:grid-cols-2 gap-4">
             {FORM_FIELDS.ORDER_TYPES.map(({ key, label }) => (
               <label key={key} className="flex items-center space-x-2 text-sm text-gray-700">

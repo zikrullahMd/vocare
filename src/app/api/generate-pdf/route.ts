@@ -38,7 +38,6 @@ export async function POST(req: NextRequest) {
     // Basic validation for mandatory form area (header section)
     const requiredFields = [
       'patient_insurer_name',
-      'patient_insured_fullname',
       'patient_birth_date',
       'patient_payer_id',
       'patient_insured_id',
@@ -54,6 +53,16 @@ export async function POST(req: NextRequest) {
       if (v === undefined || v === null || String(v).trim() === '') {
         missing.push(key);
       }
+    }
+
+    // Additional conditional requirement: need either fullname OR both name parts
+    const hasFullname = !!(form_payload.patient_insured_fullname && String(form_payload.patient_insured_fullname).trim() !== '');
+    const hasNameParts = !!(form_payload.patient_insured_vorname && String(form_payload.patient_insured_vorname).trim() !== '' &&
+                             form_payload.patient_insured_nachname && String(form_payload.patient_insured_nachname).trim() !== '');
+    if (!hasFullname && !hasNameParts) {
+      // Indicate missing parts explicitly
+      missing.push('patient_insured_vorname');
+      missing.push('patient_insured_nachname');
     }
 
     // Require at least one order type checkbox
@@ -104,15 +113,19 @@ export async function POST(req: NextRequest) {
     
     delete formData.comp_stockings_off;
 
-    // Split patient name
-    if (form_payload.patient_insured_fullname) {
-      const nameParts = form_payload.patient_insured_fullname.split(' ');
+    // Derive name fields
+    if (form_payload.patient_insured_fullname && !form_payload.patient_insured_vorname && !form_payload.patient_insured_nachname) {
+      const nameParts = String(form_payload.patient_insured_fullname).trim().split(/\s+/);
       if (nameParts.length >= 2) {
         formData.patient_insured_vorname = nameParts[0];
         formData.patient_insured_nachname = nameParts.slice(1).join(' ');
       } else {
         formData.patient_insured_vorname = form_payload.patient_insured_fullname;
       }
+    } else {
+      // If separate parts provided, keep them
+      if (form_payload.patient_insured_vorname) formData.patient_insured_vorname = form_payload.patient_insured_vorname;
+      if (form_payload.patient_insured_nachname) formData.patient_insured_nachname = form_payload.patient_insured_nachname;
     }
 
     // Handle nested objects
