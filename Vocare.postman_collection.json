@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "35e94b7f-b759-40c9-9090-60007a26d065",
 		"name": "Vocare",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "15228504"
 	},
 	"item": [
@@ -10,20 +10,84 @@
 			"name": "Generate PDF",
 			"item": [
 				{
-					"name": "api/generate-pdf",
+					"name": "Minimal required form",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"type\": \"fillout\",\n  \"form\": \"a\",\n  \"notify\": false,\n  \"form_payload\": {\n    \"patient_insurer_name\": \"AOK Pflegekasse\",\n    \"patient_insured_fullname\": \"John Doe\",\n    \"patient_birth_date\": \"1985-05-15\",\n    \"patient_payer_id\": \"PAYER123\",\n    \"patient_insured_id\": \"INS456\",\n    \"patient_status\": \"active\",\n    \"patient_facility_id\": \"FAC-001\",\n    \"patient_doctor_id\": \"DOC-001\",\n    \"patient_date\": \"2025-01-20\",\n    \"order_first\": true\n  }\n}",
+							"raw": "{\n  \"type\": \"fillout\",\n  \"form\": \"a\",\n  \"notify\": false,\n  \"form_payload\": {\n    \"patient_insurer_name\": \"TK\",\n    \"patient_insured_vorname\": \"John\",\n    \"patient_insured_nachname\": \"Doe\",\n    \"patient_birth_date\": \"1990-01-01\",\n    \"patient_payer_id\": \"12345\",\n    \"patient_insured_id\": \"67890\",\n    \"patient_status\": \"active\",\n    \"patient_facility_id\": \"facility123\",\n    \"patient_doctor_id\": \"doctor456\",\n    \"patient_date\": \"2024-01-15\",\n    \"order_first\": true,\n    \"diagnosis_icd10\": \"Z51.1\",\n    \"doctor_name\": \"Dr. Smith\",\n    \"doctor_dr_nr\": \"DOC-001\",\n    \"doctor_establishment_nr\": \"FAC-001\",\n    \"doctor_city\": \"Berlin\",\n    \"doctor_postal_code\": \"10115\"\n  }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://localhost:3000/api/generate-pdf"
+						"url": {
+							"raw": "http://localhost:3000/api/generate-pdf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"generate-pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SMS notification",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"fillout\",\n  \"form\": \"a\",\n  \"notify\": true,\n  \"form_payload\": {\n    \"patient_insurer_name\": \"DAK\",\n    \"patient_insured_vorname\": \"Peter\",\n    \"patient_insured_nachname\": \"Weber\",\n    \"patient_birth_date\": \"1978-12-03\",\n    \"patient_payer_id\": \"DAK-789\",\n    \"patient_insured_id\": \"DAK-012\",\n    \"patient_status\": \"active\",\n    \"patient_facility_id\": \"FAC-003\",\n    \"patient_doctor_id\": \"DOC-003\",\n    \"patient_date\": \"2025-02-01\",\n    \"order_accident\": true,\n    \"diagnosis_icd10\": \"S72.0\",\n    \"doctor_name\": \"Dr. Weber\",\n    \"doctor_dr_nr\": \"DOC-003\",\n    \"doctor_establishment_nr\": \"FAC-003\",\n    \"doctor_city\": \"Köln\",\n    \"doctor_postal_code\": \"50667\",\n    \"notify\": true,\n    \"notification_types\": [\"sms\"],\n    \"recipient\": {\n      \"phone\": \"+491701234567\",\n      \"name\": \"Peter Weber\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/generate-pdf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"generate-pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Notifications",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"fillout\",\n  \"form\": \"a\",\n  \"notify\": true,\n  \"form_payload\": {\n    \"patient_insurer_name\": \"IKK\",\n    \"patient_insured_vorname\": \"Maria\",\n    \"patient_insured_nachname\": \"Garcia\",\n    \"patient_birth_date\": \"1992-08-14\",\n    \"patient_payer_id\": \"IKK-345\",\n    \"patient_insured_id\": \"IKK-678\",\n    \"patient_status\": \"active\",\n    \"patient_facility_id\": \"FAC-004\",\n    \"patient_doctor_id\": \"DOC-004\",\n    \"patient_date\": \"2025-03-10\",\n    \"order_ser\": true,\n    \"diagnosis_icd10\": \"F32.9\",\n    \"doctor_name\": \"Dr. Garcia\",\n    \"doctor_dr_nr\": \"DOC-004\",\n    \"doctor_establishment_nr\": \"FAC-004\",\n    \"doctor_city\": \"Frankfurt\",\n    \"doctor_postal_code\": \"60311\",\n    \"notify\": true,\n    \"notification_types\": [\"email\", \"sms\", \"push\"],\n    \"recipient\": {\n      \"email\": \"maria.garcia@example.com\",\n      \"phone\": \"+491609876543\",\n      \"name\": \"Maria Garcia\"\n    }\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/generate-pdf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"generate-pdf"
+							]
+						}
 					},
 					"response": []
 				}
@@ -46,7 +110,18 @@
 								}
 							}
 						},
-						"url": "http://localhost:3000/api/notify"
+						"url": {
+							"raw": "http://localhost:3000/api/notify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"notify"
+							]
+						}
 					},
 					"response": []
 				}
@@ -69,7 +144,18 @@
 								}
 							}
 						},
-						"url": "http://localhost:3000/api/log"
+						"url": {
+							"raw": "http://localhost:3000/api/log",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"log"
+							]
+						}
 					},
 					"response": []
 				},
@@ -87,27 +173,49 @@
 								}
 							}
 						},
-						"url": "http://localhost:3000/api/log"
+						"url": {
+							"raw": "http://localhost:3000/api/log",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"log"
+							]
+						}
 					},
 					"response": []
 				}
 			]
 		},
 		{
-			"name": "api/generate-pdf",
+			"name": "Generate PDF ( Complete Form)",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"type\": \"fillout\",\n  \"form\": \"a\",\n  \"notify\": true,\n  \"form_payload\": {\n    \"patient_id\": \"PAT-001\",\n    \"patient_insurer_name\": \"AOK Bayern\",\n    \"patient_insured_fullname\": \"Max Mustermann\",\n    \"patient_insured_vorname\": \"Max\",\n    \"patient_insured_nachname\": \"Mustermann\",\n    \"patient_birth_date\": \"1985-07-21\",\n    \"patient_payer_id\": \"PAYER-123\",\n    \"patient_insured_id\": \"INS-987654\",\n    \"patient_status\": \"active\",\n    \"patient_facility_id\": \"FAC-55\",\n    \"patient_doctor_id\": \"DOC-22\",\n    \"patient_date\": \"2025-09-25\",\n\n    \"order_first\": true,\n    \"order_followup\": true,\n    \"order_accident\": true,\n    \"order_ser\": true,\n\n    \"diagnosis_icd10\": \"E11.9\",\n    \"diagnosis_restrictions\": \"Limited mobility and diabetes management required\",\n    \"restrictions_text\": \"Patient requires home care due to mobility limitations and diabetes management needs\",\n\n    \"period_from\": \"2025-10-01\",\n    \"period_to\": \"2025-12-31\",\n    \"care_meds_text\": \"Metformin 500mg twice daily, Insulin as needed\",\n    \"panel_freq_daily\": 2,\n    \"panel_freq_weekly\": 3,\n    \"panel_freq_monthly\": 1,\n    \"panel_dur_from\": \"2025-10\",\n    \"panel_dur_to\": \"2025-12\",\n\n    \"care_prepare_med_box\": true,\n    \"care_administer_meds\": true,\n    \"care_injection\": true,\n    \"care_injection_prepare\": true,\n    \"care_injection_im\": true,\n    \"care_injection_sc\": true,\n\n    \"glucose_first_or_new\": true,\n    \"glucose_intensified_insulin\": true,\n\n    \"comp_stockings_on\": true,\n    \"comp_bandages_apply\": true,\n    \"comp_side_right\": true,\n    \"comp_side_left\": true,\n    \"comp_side_both\": true,\n    \"comp_bandages_remove\": true,\n    \"comp_support_bandage_type\": \"Class II Compression Stockings\",\n    \"supportive_and_stabilizing\": true,\n\n    \"wound_acute\": true,\n    \"wound_chronic\": true,\n    \"wound_type\": \"Diabetic ulcer\",\n    \"wound_materials\": \"Hydrocolloid dressing, saline solution\",\n    \"wound_location\": \"Left foot, plantar surface\",\n    \"wound_size_lwd\": \"2.5cm x 1.8cm x 0.3cm\",\n    \"wound_grade\": \"Grade 2\",\n\n    \"s37_support_care_37a\": true,\n    \"s37_hospital_avoid_37_1\": true,\n    \"s37_base_care\": true,\n    \"s37_household_care\": true,\n    \"s37_freq_daily\": 2,\n    \"s37_freq_weekly\": 4,\n    \"s37_freq_monthly\": 1,\n    \"s37_from\": \"2025-10-01\",\n    \"s37_to\": \"2025-12-31\",\n\n    \"other_measures\": \"Physiotherapy referral, dietary consultation, podiatry care\",\n    \"instruction_text\": \"Comprehensive caregiver instruction including medication administration, wound care, and glucose monitoring\",\n    \"instruction_count\": 5,\n    \"doctor_signature\": \"Dr. Johannes Arzt\",\n    \"notes_text\": \"Patient requires comprehensive care plan. Family caregiver training completed. Regular follow-up appointments scheduled.\",\n\n    \"doctor\": {\n      \"name\": \"Dr. Johannes Arzt\",\n      \"dr_nr\": \"DR-7788\",\n      \"establishment_nr\": \"EST-4455\",\n      \"street\": \"Hauptstr. 10\",\n      \"city\": \"München\",\n      \"postal_code\": \"80331\"\n    },\n\n    \"medi_multi\": {\n      \"injection\": true,\n      \"herrichten\": true,\n      \"intra_muscular\": true,\n      \"subkutan\": true\n    },\n\n    \"p37_1\": {\n      \"base_care\": {\n        \"active\": true,\n        \"daily\": 2,\n        \"weekly\": 4,\n        \"monthly\": 1\n      }\n    }\n  }\n}",
+					"raw": "{\n  \"type\": \"fillout\",\n  \"form\": \"a\",\n  \"notify\": true,\n  \"form_payload\": {\n    \"patient_id\": \"PAT-001\",\n    \"patient_insurer_name\": \"AOK Bayern\",\n    \"patient_insured_vorname\": \"Max\",\n    \"patient_insured_nachname\": \"Mustermann\",\n    \"patient_birth_date\": \"1985-07-21\",\n    \"patient_payer_id\": \"PAYER-123\",\n    \"patient_insured_id\": \"INS-987654\",\n    \"patient_status\": \"active\",\n    \"patient_facility_id\": \"FAC-55\",\n    \"patient_doctor_id\": \"DOC-22\",\n    \"patient_date\": \"2025-09-25\",\n    \"order_first\": true,\n    \"order_followup\": false,\n    \"order_accident\": false,\n    \"order_ser\": false,\n    \"diagnosis_icd10\": \"E11.9\",\n    \"diagnosis_restrictions\": \"Limited mobility and diabetes management required\",\n    \"restrictions_text\": \"Patient requires home care due to mobility limitations\",\n    \"period_from\": \"2025-10-01\",\n    \"period_to\": \"2025-12-31\",\n    \"care_meds_text\": \"Metformin 500mg twice daily, Insulin as needed\",\n    \"panel_freq_daily\": 2,\n    \"panel_freq_weekly\": 3,\n    \"panel_freq_monthly\": 1,\n    \"care_prepare_med_box\": true,\n    \"care_injection\": true,\n    \"care_injection_prepare\": true,\n    \"glucose_first_or_new\": true,\n    \"comp_stockings_on\": true,\n    \"wound_acute\": true,\n    \"wound_type\": \"Diabetic ulcer\",\n    \"s37_base_care\": true,\n    \"s37_freq_daily\": 2,\n    \"s37_freq_weekly\": 4,\n    \"other_measures\": \"Physiotherapy referral\",\n    \"instruction_text\": \"Comprehensive caregiver instruction\",\n    \"doctor_name\": \"Dr. Johannes Arzt\",\n    \"doctor_dr_nr\": \"DR-7788\",\n    \"doctor_establishment_nr\": \"EST-4455\",\n    \"doctor_city\": \"München\",\n    \"doctor_postal_code\": \"80331\",\n    \"medi_injection\": true,\n    \"medi_herrichten\": true,\n    \"p37_base_care_active\": true,\n    \"p37_base_care_daily\": 2,\n    \"p37_base_care_weekly\": 4,\n    \"notify\": true,\n    \"notification_types\": [\"email\", \"sms\"],\n    \"recipient\": {\n      \"email\": \"patient@example.com\",\n      \"phone\": \"+1234567890\",\n      \"name\": \"Max Mustermann\"\n    }\n  }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": "http://localhost:3000/api/generate-pdf"
+				"url": {
+					"raw": "http://localhost:3000/api/generate-pdf",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"generate-pdf"
+					]
+				}
 			},
 			"response": []
 		},
@@ -125,7 +233,18 @@
 						}
 					}
 				},
-				"url": "http://localhost:3000/api/notify"
+				"url": {
+					"raw": "http://localhost:3000/api/notify",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"notify"
+					]
+				}
 			},
 			"response": []
 		},
@@ -143,7 +262,18 @@
 						}
 					}
 				},
-				"url": "http://localhost:3000/api/log"
+				"url": {
+					"raw": "http://localhost:3000/api/log",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"log"
+					]
+				}
 			},
 			"response": []
 		},
@@ -152,7 +282,18 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:3000/api/pdfs"
+				"url": {
+					"raw": "http://localhost:3000/api/pdfs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"pdfs"
+					]
+				}
 			},
 			"response": []
 		},
@@ -161,7 +302,18 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:3000/api/log"
+				"url": {
+					"raw": "http://localhost:3000/api/log",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"log"
+					]
+				}
 			},
 			"response": []
 		}
