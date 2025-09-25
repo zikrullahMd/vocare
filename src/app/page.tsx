@@ -14,11 +14,14 @@ export default function Home() {
   const handleGeneratePDF = async (formData: any) => {
     setLoading(true);
     try {
+      // Extract notification settings from form data
+      const { notify, notification_types, recipient, ...payload } = formData;
+      
       const request: GeneratePDFRequest = {
         type: 'fillout',
         form: 'a',
-        notify: true,
-        form_payload: formData
+        notify: notify || false,
+        form_payload: payload
       };
 
       const response = await generatePDF(request);
@@ -27,25 +30,27 @@ export default function Home() {
         setLastDoc({ id: response.data.id, url: response.data.file_url });
         setActiveTab('landing');
 
-        // Send notification
-        try {
-          await sendNotification({
-            type: 'pdf_ready',
-            recipient: {
-              email: 'patient@example.com',
-              phone: '+1234567890',
-              name: 'Max Mustermann'
-            },
-            message: 'Your care document is ready for download',
-            document: {
-              id: response.data.id,
-              name: 'Care Document',
-              download_url: response.data.file_url,
-            },
-            notification_types: ['email']
-          });
-        } catch (error) {
-          console.error('Failed to send notification:', error);
+        // Send additional notification if enabled and recipient info provided
+        if (notify && recipient && notification_types) {
+          try {
+            await sendNotification({
+              type: 'pdf_ready',
+              recipient: {
+                email: recipient.email,
+                phone: recipient.phone,
+                name: recipient.name
+              },
+              message: 'Your care document is ready for download',
+              document: {
+                id: response.data.id,
+                name: 'Care Document',
+                download_url: response.data.file_url,
+              },
+              notification_types: notification_types
+            });
+          } catch (error) {
+            console.error('Failed to send notification:', error);
+          }
         }
       } else {
         alert('Failed to generate PDF: ' + (response.error || 'Unknown error'));

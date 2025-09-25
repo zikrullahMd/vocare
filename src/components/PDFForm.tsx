@@ -10,6 +10,13 @@ export default function PDFForm({ onGenerate, loading, lastDoc }: PDFFormProps) 
   const [mediMulti, setMediMulti] = useState<MediMultiData>(DEFAULT_MEDI_MULTI_VALUES);
   const [baseCare, setBaseCare] = useState<BaseCareData>(DEFAULT_BASE_CARE_VALUES);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  
+  // Notification settings
+  const [notifyEnabled, setNotifyEnabled] = useState(false);
+  const [notificationTypes, setNotificationTypes] = useState<string[]>(['email']);
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [recipientPhone, setRecipientPhone] = useState('');
+  const [recipientName, setRecipientName] = useState('');
 
   // Required fields
   const requiredFields = [
@@ -57,6 +64,19 @@ export default function PDFForm({ onGenerate, loading, lastDoc }: PDFFormProps) 
       (formState as any).order_ser
     );
     if (!hasOrder) newErrors.order_type = 'Select at least one order type';
+
+    // Validate notification settings if enabled
+    if (notifyEnabled) {
+      if (notificationTypes.includes('email') && !recipientEmail?.trim()) {
+        newErrors.recipient_email = 'Email is required for email notifications';
+      }
+      if (notificationTypes.includes('sms') && !recipientPhone?.trim()) {
+        newErrors.recipient_phone = 'Phone number is required for SMS notifications';
+      }
+      if (!recipientName?.trim()) {
+        newErrors.recipient_name = 'Recipient name is required for notifications';
+      }
+    }
     
     // Check doctor fields
     if (!doctor.name?.trim()) newErrors.doctor_name = 'Doctor Name is required';
@@ -114,7 +134,15 @@ export default function PDFForm({ onGenerate, loading, lastDoc }: PDFFormProps) 
       p37_base_care_active: baseCare.active,
       p37_base_care_daily: baseCare.daily,
       p37_base_care_weekly: baseCare.weekly,
-      p37_base_care_monthly: baseCare.monthly
+      p37_base_care_monthly: baseCare.monthly,
+      // Notification settings
+      notify: notifyEnabled,
+      notification_types: notificationTypes,
+      recipient: {
+        email: recipientEmail,
+        phone: recipientPhone,
+        name: recipientName
+      }
     };
 
     onGenerate(formData);
@@ -627,6 +655,100 @@ export default function PDFForm({ onGenerate, loading, lastDoc }: PDFFormProps) 
               <textarea className="w-full border border-slate-300 rounded-lg px-3 py-2" rows={3} value={formState.notes_text}
                 onChange={(e)=>setFormState((s:any)=>({...s, notes_text:e.target.value}))}></textarea>
             </div>
+          </div>
+        </div>
+
+        {/* Notification Settings */}
+        <div className="border-t border-gray-200 pt-6">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">Notification Settings</h2>
+          
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="notify-enabled"
+                checked={notifyEnabled}
+                onChange={(e) => setNotifyEnabled(e.target.checked)}
+                className="rounded border-gray-300 text-gray-900 focus:ring-gray-500"
+              />
+              <label htmlFor="notify-enabled" className="text-sm text-gray-700">
+                Send notification when PDF is ready
+              </label>
+            </div>
+
+            {notifyEnabled && (
+              <div className="pl-6 space-y-4 border-l-2 border-gray-200">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Notification Types
+                  </label>
+                  <div className="space-y-2">
+                    {[
+                      { key: 'email', label: 'Email' },
+                      { key: 'sms', label: 'SMS' },
+                      { key: 'push', label: 'Push Notification' }
+                    ].map(({ key, label }) => (
+                      <label key={key} className="flex items-center space-x-2 text-sm text-gray-700">
+                        <input
+                          type="checkbox"
+                          checked={notificationTypes.includes(key)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setNotificationTypes([...notificationTypes, key]);
+                            } else {
+                              setNotificationTypes(notificationTypes.filter(t => t !== key));
+                            }
+                          }}
+                          className="rounded border-gray-300 text-gray-900 focus:ring-gray-500"
+                        />
+                        <span>{label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm text-gray-700 mb-1">
+                      Recipient Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      className={`w-full border rounded px-3 py-2 text-sm ${errors.recipient_name ? 'border-red-500' : 'border-gray-300'}`}
+                      value={recipientName}
+                      onChange={(e) => setRecipientName(e.target.value)}
+                      placeholder="e.g., John Doe"
+                    />
+                    {errors.recipient_name && <p className="text-red-500 text-xs mt-1">{errors.recipient_name}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-700 mb-1">
+                      Email {notificationTypes.includes('email') && <span className="text-red-500">*</span>}
+                    </label>
+                    <input
+                      type="email"
+                      className={`w-full border rounded px-3 py-2 text-sm ${errors.recipient_email ? 'border-red-500' : 'border-gray-300'}`}
+                      value={recipientEmail}
+                      onChange={(e) => setRecipientEmail(e.target.value)}
+                      placeholder="patient@example.com"
+                    />
+                    {errors.recipient_email && <p className="text-red-500 text-xs mt-1">{errors.recipient_email}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-700 mb-1">
+                      Phone {notificationTypes.includes('sms') && <span className="text-red-500">*</span>}
+                    </label>
+                    <input
+                      type="tel"
+                      className={`w-full border rounded px-3 py-2 text-sm ${errors.recipient_phone ? 'border-red-500' : 'border-gray-300'}`}
+                      value={recipientPhone}
+                      onChange={(e) => setRecipientPhone(e.target.value)}
+                      placeholder="+1234567890"
+                    />
+                    {errors.recipient_phone && <p className="text-red-500 text-xs mt-1">{errors.recipient_phone}</p>}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
