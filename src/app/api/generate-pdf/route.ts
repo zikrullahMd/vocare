@@ -35,6 +35,40 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
+    // Basic validation for mandatory form area (header section)
+    const requiredFields = [
+      'patient_insurer_name',
+      'patient_insured_fullname',
+      'patient_birth_date',
+      'patient_payer_id',
+      'patient_insured_id',
+      'patient_status',
+      'patient_facility_id',
+      'patient_doctor_id',
+      'patient_date'
+    ];
+
+    const missing: string[] = [];
+    for (const key of requiredFields) {
+      const v = (form_payload as any)[key];
+      if (v === undefined || v === null || String(v).trim() === '') {
+        missing.push(key);
+      }
+    }
+
+    // Require at least one order type checkbox
+    const hasOrder = !!(form_payload.order_first || form_payload.order_followup || form_payload.order_accident || form_payload.order_ser);
+    if (!hasOrder) {
+      missing.push('order_type');
+    }
+
+    if (missing.length > 0) {
+      return NextResponse.json({
+        error: 'Missing mandatory fields',
+        missing
+      }, { status: 400 });
+    }
+
     // Load PDF template
     const templatePath = process.env.PDF_TEMPLATE_PATH!;
     const templateBytes = await fs.readFile(templatePath);

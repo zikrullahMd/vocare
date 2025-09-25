@@ -1,0 +1,194 @@
+/* Custom animations */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Tables */
+.table-container {
+  @apply border border-gray-200 rounded;
+}
+
+.table-empty {
+  @apply text-center py-12;
+}
+
+.table-empty-icon {
+  @apply w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center;
+}
+
+.table-empty-text {
+  @apply text-gray-500 text-lg;
+}
+
+.table-empty-subtext {
+  @apply text-gray-400 text-sm mt-1;
+}
+
+/* Filters */
+.filter-tabs {
+  @apply flex space-x-1 mb-6 border-b border-gray-200;
+}
+
+.filter-tab {
+  @apply px-3 py-2 text-sm font-medium border-b-2 transition-colors;
+}
+
+.filter-tab-active {
+  @apply border-gray-900 text-gray-900;
+}
+
+.filter-tab-inactive {
+  @apply border-transparent text-gray-500 hover:text-gray-900;
+}
+
+/* Search and Sort */
+.search-sort-container {
+  @apply mb-6;
+}
+
+.search-sort-content {
+  @apply flex flex-col sm:flex-row gap-4;
+}
+
+.search-input {
+  @apply flex-1;
+}
+
+.sort-controls {
+  @apply flex gap-2;
+}
+
+/* Cards */
+.card-minimal {
+  @apply border border-gray-200 rounded;
+}
+
+.card-content {
+  @apply p-4;
+}
+
+.card-header-minimal {
+  @apply mb-4;
+}
+
+.card-title {
+  @apply text-2xl font-medium text-gray-900 mb-2;
+}
+
+.card-subtitle {
+  @apply text-gray-600;
+}
+
+/* Buttons */
+.button-group {
+  @apply flex items-center gap-3;
+}
+
+.button-group-vertical {
+  @apply flex flex-col gap-2;
+}
+
+/* Status badges */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-gray {
+  @apply bg-gray-100 text-gray-800;
+}
+
+.badge-green {
+  @apply bg-green-100 text-green-800;
+}
+
+.badge-red {
+  @apply bg-red-100 text-red-800;
+}
+
+.badge-blue {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.badge-yellow {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+/* Links */
+.link-external {
+  @apply text-blue-600 hover:underline;
+}
+
+.link-download {
+  @apply inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 transition-colors;
+}
+
+/* Loading states */
+.loading-container {
+  @apply min-h-screen bg-white flex items-center justify-center;
+}
+
+.loading-content {
+  @apply text-center;
+}
+
+.loading-spinner-large {
+  @apply animate-spin rounded-full h-16 w-16 border-2 border-gray-200 border-t-gray-900 mx-auto;
+}
+
+.loading-text {
+  @apply mt-4 text-gray-600 font-medium;
+}
+
+/* Responsive utilities */
+.responsive-container {
+  @apply max-w-4xl mx-auto px-4 py-16;
+}
+
+.responsive-container-wide {
+  @apply max-w-6xl mx-auto px-4 py-8;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
