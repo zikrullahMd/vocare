@@ -1,0 +1,313 @@
+{
+  "info": {
+    "name": "Care Platform API",
+    "description": "Complete API collection for the Care Platform - PDF generation, logging, and notifications",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "PDF Generation",
+      "item": [
+        {
+          "name": "Generate PDF - Complete Form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"fillout\",\n  \"form\": \"a\",\n  \"notify\": true,\n  \"form_payload\": {\n    \"patient_insurer_name\": \"AOK Pflegekasse\",\n    \"patient_insured_fullname\": \"Max Mustermann\",\n    \"patient_birth_date\": \"1990-01-01\",\n    \"patient_payer_id\": \"12345\",\n    \"patient_insured_id\": \"67890\",\n    \"patient_status\": \"active\",\n    \"patient_facility_id\": \"facility123\",\n    \"patient_doctor_id\": \"doctor456\",\n    \"patient_date\": \"2024-01-15\",\n    \"order_first\": true,\n    \"order_followup\": false,\n    \"order_accident\": false,\n    \"order_ser\": false,\n    \"patient_id\": \"patient123\",\n    \"doctor\": {\n      \"establishment_nr\": \"facility123\",\n      \"dr_nr\": \"doctor456\",\n      \"name\": \"Dr. Smith\",\n      \"id\": \"doc123\"\n    },\n    \"medi_multi\": {\n      \"injection\": true,\n      \"herrichten\": false,\n      \"intra_muscular\": true,\n      \"subkutan\": false\n    },\n    \"p37_1\": {\n      \"base_care\": {\n        \"active\": true,\n        \"daily\": 2,\n        \"weekly\": 1,\n        \"monthly\": 0\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/generate-pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "generate-pdf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate PDF - Minimal Form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"fillout\",\n  \"form\": \"a\",\n  \"notify\": false,\n  \"form_payload\": {\n    \"patient_insurer_name\": \"Test Insurance\",\n    \"patient_insured_fullname\": \"John Doe\",\n    \"patient_birth_date\": \"1985-05-15\",\n    \"patient_payer_id\": \"PAYER123\",\n    \"patient_insured_id\": \"INSURED456\",\n    \"patient_status\": \"active\",\n    \"patient_facility_id\": \"FACILITY789\",\n    \"patient_doctor_id\": \"DOCTOR101\",\n    \"patient_date\": \"2024-01-20\",\n    \"order_first\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/generate-pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "generate-pdf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate PDF - Missing Required Fields",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"fillout\",\n  \"form\": \"a\",\n  \"notify\": false,\n  \"form_payload\": {\n    \"patient_insurer_name\": \"Test Insurance\",\n    \"patient_insured_fullname\": \"John Doe\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/generate-pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "generate-pdf"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PDF Management",
+      "item": [
+        {
+          "name": "Get All PDFs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pdfs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pdfs"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Activity Logging",
+      "item": [
+        {
+          "name": "Get All Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/log",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "log"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Log Entry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event_type\": \"user_action\",\n  \"details\": {\n    \"action\": \"form_submitted\",\n    \"user_id\": \"user123\",\n    \"form_type\": \"care_document\",\n    \"timestamp\": \"2024-01-15T10:30:00Z\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/log",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "log"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Log Entry - PDF Generated",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event_type\": \"pdf_generated\",\n  \"details\": {\n    \"file_id\": \"uuid-here\",\n    \"patient_id\": \"patient123\",\n    \"doctor_id\": \"doctor456\",\n    \"form_type\": \"fillout\",\n    \"file_size\": 12345,\n    \"generation_time_ms\": 1500\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/log",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "log"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Log Entry - Error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event_type\": \"error\",\n  \"details\": {\n    \"error_type\": \"validation_error\",\n    \"message\": \"Missing required fields\",\n    \"missing_fields\": [\"patient_birth_date\", \"patient_payer_id\"],\n    \"request_id\": \"req-123\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/log",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "log"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Send Email Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"pdf_ready\",\n  \"recipient\": {\n    \"email\": \"patient@example.com\",\n    \"name\": \"John Doe\"\n  },\n  \"message\": \"Your care document is ready for download\",\n  \"document\": {\n    \"id\": \"doc123\",\n    \"name\": \"Care Document - John Doe\",\n    \"download_url\": \"https://example.com/download/doc123.pdf\",\n    \"created_at\": \"2024-01-15T10:30:00Z\"\n  },\n  \"notification_types\": [\"email\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notify"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send SMS Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"pdf_ready\",\n  \"recipient\": {\n    \"phone\": \"+1234567890\",\n    \"name\": \"John Doe\"\n  },\n  \"message\": \"Your care document is ready. Download: https://example.com/download/doc123.pdf\",\n  \"document\": {\n    \"id\": \"doc123\",\n    \"name\": \"Care Document - John Doe\",\n    \"download_url\": \"https://example.com/download/doc123.pdf\",\n    \"created_at\": \"2024-01-15T10:30:00Z\"\n  },\n  \"notification_types\": [\"sms\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notify"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Multiple Notifications",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"pdf_ready\",\n  \"recipient\": {\n    \"email\": \"patient@example.com\",\n    \"phone\": \"+1234567890\",\n    \"device_id\": \"device123\",\n    \"name\": \"John Doe\"\n  },\n  \"message\": \"Your care document is ready for download\",\n  \"document\": {\n    \"id\": \"doc123\",\n    \"name\": \"Care Document - John Doe\",\n    \"download_url\": \"https://example.com/download/doc123.pdf\",\n    \"created_at\": \"2024-01-15T10:30:00Z\"\n  },\n  \"notification_types\": [\"email\", \"sms\", \"push\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notify"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Notification - Missing Fields",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"pdf_ready\",\n  \"recipient\": {\n    \"email\": \"patient@example.com\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notify"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "API Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/log",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "log"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set timestamp for requests that need it",
+          "pm.globals.set('timestamp', new Date().toISOString());"
+        ]
+      }
+    }
+  ]
+}
